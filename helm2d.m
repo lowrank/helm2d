@@ -4,11 +4,11 @@ function [x] = helm2d()
 % Finite element method based.
 
 %% paramaters
-k = 15; % freq
+k = 2*pi/0.02; % freq
 sig = 0; % absorption
-margin = 2;
+margin = 0.5;
 
-opt = struct('deg', 3, 'qdeg', 6, 'min_area', 1e-3, 'edge', [0 1 1 0; 0 0 1 1], 'hull',...
+opt = struct('deg', 1, 'qdeg', 3, 'min_area', 4e-6, 'edge', [0 1 1 0; 0 0 1 1], 'hull',...
     [0 0 1 0 1 1 0 1 ...
     -margin -margin 1+margin -margin ...
     1+margin 1+margin -margin 1+margin]',...
@@ -19,7 +19,8 @@ V = femm(opt);
 S = V.build('s', 1);
 M = V.build('m', 1);
 
-f =@(x)(exp(-((x(1,:) - 0.5).^2 + (x(2,:) - 0.5).^2)/100)); 
+st = 0.01;
+f =@(x)(exp(-((x(1,:) -0.5).^2 + (x(2,:) - 0.5).^2)/(2*st^2))/(2*pi*st^2)); 
 load_f = f(V.quad2d);
 L = V.build('l', load_f);
 
